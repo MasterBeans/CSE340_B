@@ -1,0 +1,13 @@
+<section class="error-message">
+    <h2 class = >Oops! Something went wrong (Error : <%= title %>)</h2>
+    
+    <p><%- message %></p>
+
+    <% if (title == "404" || title == 404) { %>
+        <p>Page not found! or page is lost??</p>
+    <% } else { %>
+        <p>Internal Server Error</p>
+    <% } %>
+
+    <a href="/">Go back to Home</a>
+</section>

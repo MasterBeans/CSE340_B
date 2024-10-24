@@ -269,7 +269,7 @@ main{
   color: #d9534f;
 }
 
-.error-container {
+.error-message {
   max-width: 600px;
   margin: 50px auto; /* Center the container */
   padding: 20px;
@@ -278,6 +278,10 @@ main{
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.error-message h2{
+  color: blue;
 }
 
 footer{
