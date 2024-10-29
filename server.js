@@ -9,16 +9,17 @@ const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
 const env = require("dotenv").config()
 const app = express()
-const static = require("./routes/static")
-const baseController = require("./controllers/baseController")
-const inventoryRoute = require("./routes/inventoryRoute")
-const accountRoute = require("./routes/accountRoute")
-const utilities = require('./utilities')
-const session = require("express-session")
-const pool = require('./database/')
-const bodyParser = require("body-parser")
-const cookieParser = require("cookie-parser")
-
+const staticRoutes = require("./routes/static");
+const inventoryRoute = require("./routes/inventoryRoute");
+const accountRoute = require("./routes/accountRoute");
+const messageRoute = require("./routes/messageRoute");
+const baseController = require("./controllers/baseController");
+const utilities = require("./utilities/");
+const session = require("express-session");
+const pool = require('./database/');
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const setUser = require("./middleware/auth");
 
 /* ***********************
  * Middleware
@@ -26,8 +27,8 @@ const cookieParser = require("cookie-parser")
 app.use(session({
   store: new (require('connect-pg-simple')(session))({createTableIfMissing: true, pool,  }),
   secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   name: 'sessionId',
 }))
 
@@ -40,10 +41,12 @@ app.use(function(req, res, next){
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
 app.use(cookieParser())
-
 app.use(utilities.checkJWTToken)
+app.use(setUser)
+
+
+
 
 /* ***********************
  * View Engine and Templates
@@ -56,16 +59,13 @@ app.set("layout", "./layouts/layout") // not at views root
 /* ***********************
  * Routes
  *************************/
-app.use(static)
+app.use(staticRoutes)
 app.get("/", utilities.handleErrors(baseController.buildHome)) //Index Route
 app.use("/inv", inventoryRoute)// Inventory routes
 app.use("/account", accountRoute)// Account routes
+app.use("/message", utilities.handleErrors(messageRoute))
 app.use(async (req, res, next) => {next({status: 404, message: 'Sorry, we appear to have lost that page.'})})//File Not Found Route - must be last route in list
-
-
-
-
-
+app.use(express.static('public'));
 
 /* ***********************
 * Express Error Handler
