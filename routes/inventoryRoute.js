@@ -20,7 +20,14 @@ router.get("/management", utilities.handleErrors(invController.buildManagementVi
 router.get("/add-classification", utilities.handleErrors(invController.buildAddClassificationView))
 
 // Route add inventory form
-router.get("/add-inventory", utilities.handleErrors(invController.buildAddInventoryView));
+router.get("/add-inventory", utilities.handleErrors(invController.buildAddInventoryView))
+
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+
+router.get('/edit/:inventory_id',  utilities.handleErrors(invController.getEditInventoryView));
+router.post("/update/:id", utilities.handleErrors(invController.updateInventory));
+router.get('/delete/:inv_id',  utilities.handleErrors(invController.getDeleteView));
+router.post('/delete/:inv_id',  utilities.handleErrors(invController.deleteInventoryItem));
 
 // Process classification form submission
 router.post(
